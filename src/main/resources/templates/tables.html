@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tables</title>
+</head>
+<body>
+    <h1>Our tables</h1>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>Table number</th>
+            <th>Seats</th>
+            <th>Active</th>
+        </tr>
+        <!-- Repeats this row once for every table sent by the controller -->
+        <tr th:each="table : ${tables}">
+            <td th:text="${table.tableNumber}"></td>
+            <td th:text="${table.seats}"></td>
+            <td th:text="${table.active}"></td>
+        </tr>
+    </table>
+</body>
+</html>

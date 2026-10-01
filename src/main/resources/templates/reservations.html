@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My reservations</title>
+</head>
+<body>
+    <h1>My reservations</h1>
+
+    <p th:if="${param.booked != null}" style="color: green;">Your table is booked!</p>
+    <p th:if="${param.cancelled != null}" style="color: green;">Your reservation was cancelled.</p>
+    <p th:if="${error != null}" th:text="${error}" style="color: red;"></p>
+
+    <p th:if="${reservations.isEmpty()}">You have no reservations yet.</p>
+
+    <table border="1" cellpadding="6" th:unless="${reservations.isEmpty()}">
+        <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Table</th>
+            <th>Guests</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        <tr th:each="r : ${reservations}">
+            <td th:text="${r.date}"></td>
+            <td th:text="${r.startTime}"></td>
+            <td th:text="${r.table.tableNumber}"></td>
+            <td th:text="${r.guests}"></td>
+            <td th:text="${r.status}"></td>
+            <td>
+                <!-- The cancel button only appears for reservations that are still confirmed -->
+                <form th:if="${r.status.name() == 'CONFIRMED'}"
+                      th:action="@{/reservations/{id}/cancel(id=${r.id})}" method="post">
+                    <button type="submit">Cancel</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+    <p><a href="/search">Find a table</a></p>
+</body>
+</html>

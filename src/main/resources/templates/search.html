@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Find a table</title>
+</head>
+<body>
+    <h1>Find a table</h1>
+
+    <p th:if="${error != null}" th:text="${error}" style="color: red;"></p>
+
+    <form action="/search" method="get">
+        <label>Date: <input type="date" name="date" required></label>
+
+        <label>Time:
+            <select name="time" required>
+                <option th:each="slot : ${slots}" th:value="${slot}" th:text="${slot}"></option>
+            </select>
+        </label>
+
+        <label>Guests: <input type="number" name="guests" min="1" value="2" required></label>
+
+        <button type="submit">Search</button>
+    </form>
+
+    <div th:if="${results != null}">
+        <h2>Available tables</h2>
+
+        <p th:if="${results.isEmpty()}">Sorry, no tables are free for that time.</p>
+
+        <table border="1" cellpadding="6" th:unless="${results.isEmpty()}">
+            <tr>
+                <th>Table number</th>
+                <th>Seats</th>
+                <th></th>
+            </tr>
+            <tr th:each="table : ${results}">
+                <td th:text="${table.tableNumber}"></td>
+                <td th:text="${table.seats}"></td>
+                <td>
+                    <!-- One small form per row: sends the choice to /book -->
+                    <form th:action="@{/book}" method="post">
+                        <input type="hidden" name="tableId" th:value="${table.id}">
+                        <input type="hidden" name="date" th:value="${date}">
+                        <input type="hidden" name="time" th:value="${time}">
+                        <input type="hidden" name="guests" th:value="${guests}">
+                        <button type="submit">Book</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <p><a href="/reservations">My reservations</a> | <a href="/tables">See all tables</a></p>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Log out</button>
+    </form>
+</body>
+</html>
