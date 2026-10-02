@@ -1,0 +1,17 @@
+# Starts a PostgreSQL database for development.
+# Start it with:  docker compose up -d
+services:
+  postgres:
+    image: postgres:17
+    container_name: tablereservation-db
+    environment:
+      POSTGRES_DB: tablereservation
+      POSTGRES_USER: tableuser
+      POSTGRES_PASSWORD: tablepass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # keeps the data when the container stops
+
+volumes:
+  pgdata:

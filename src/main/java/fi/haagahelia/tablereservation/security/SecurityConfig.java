@@ -30,7 +30,12 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")             // our own login page
                 .usernameParameter("email")      // the login form field is called "email"
-                .defaultSuccessUrl("/search", true)
+                // Staff land on the reservations list, guests on the search page
+                .successHandler((request, response, authentication) -> {
+                    boolean isAdmin = authentication.getAuthorities().stream()
+                            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                    response.sendRedirect(isAdmin ? "/admin/reservations" : "/search");
+                })
                 .permitAll())
             .logout(logout -> logout
                 .logoutSuccessUrl("/login?logout")

@@ -6,6 +6,11 @@
 </head>
 <body>
     <h1>Find a table</h1>
+    <p th:if="${isAdmin}">
+        <strong>Staff:</strong>
+        <a href="/admin/reservations">All reservations</a> |
+        <a href="/admin/tables">Manage tables</a>
+    </p>
 
     <p th:if="${error != null}" th:text="${error}" style="color: red;"></p>
 
