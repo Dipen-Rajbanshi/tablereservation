@@ -95,6 +95,12 @@
         <artifactId>spring-security-test</artifactId>
         <scope>test</scope>
     </dependency>
+
+	    <!-- Google login (OAuth2 / OpenID Connect) -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security-oauth2-client</artifactId>
+    </dependency>
 </dependencies>
 
 	<build>
