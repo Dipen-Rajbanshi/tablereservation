@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 // Public pages: anyone can open these
-                .requestMatchers("/", "/tables", "/register", "/login").permitAll()
+                .requestMatchers("/", "/tables", "/register", "/login", "/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
                 // Only staff may open anything under /admin
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 // Everything else needs a logged-in user

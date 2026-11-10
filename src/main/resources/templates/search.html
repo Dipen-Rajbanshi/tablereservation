@@ -1,65 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Find a table</title>
-</head>
+<head th:replace="~{fragments :: head('Reserve a table')}"></head>
 <body>
-    <h1>Find a table</h1>
-    <p th:if="${isAdmin}">
-        <strong>Staff:</strong>
-        <a href="/admin/reservations">All reservations</a> |
-        <a href="/admin/tables">Manage tables</a>
-    </p>
-
-    <p th:if="${error != null}" th:text="${error}" style="color: red;"></p>
-
-    <form action="/search" method="get">
-        <label>Date: <input type="date" name="date" required></label>
-
-        <label>Time:
-            <select name="time" required>
-                <option th:each="slot : ${slots}" th:value="${slot}" th:text="${slot}"></option>
-            </select>
-        </label>
-
-        <label>Guests: <input type="number" name="guests" min="1" value="2" required></label>
-
-        <button type="submit">Search</button>
-    </form>
-
-    <div th:if="${results != null}">
-        <h2>Available tables</h2>
-
-        <p th:if="${results.isEmpty()}">Sorry, no tables are free for that time.</p>
-
-        <table border="1" cellpadding="6" th:unless="${results.isEmpty()}">
-            <tr>
-                <th>Table number</th>
-                <th>Seats</th>
-                <th></th>
-            </tr>
-            <tr th:each="table : ${results}">
-                <td th:text="${table.tableNumber}"></td>
-                <td th:text="${table.seats}"></td>
-                <td>
-                    <!-- One small form per row: sends the choice to /book -->
-                    <form th:action="@{/book}" method="post">
-                        <input type="hidden" name="tableId" th:value="${table.id}">
-                        <input type="hidden" name="date" th:value="${date}">
-                        <input type="hidden" name="time" th:value="${time}">
-                        <input type="hidden" name="guests" th:value="${guests}">
-                        <button type="submit">Book</button>
-                    </form>
-                </td>
-            </tr>
-        </table>
+<header th:replace="~{fragments :: navigation}"></header>
+<main class="page-shell">
+    <div class="page-heading"><p class="eyebrow">Your evening starts here</p><h1>Find a table.</h1><p>Choose a date, time, and party size. We’ll show you the tables that are free.</p></div>
+    <p class="alert alert-error" th:if="${error != null}" th:text="${error}"></p>
+    <div class="search-layout">
+        <section class="form-card search-card">
+            <h2>Plan your visit</h2><p class="form-intro">Pick the details and we’ll take it from there.</p>
+            <form th:action="@{/search}" method="get">
+                <div class="form-grid">
+                    <div class="field field-wide"><label for="date">Date</label><input id="date" type="date" name="date" th:value="${date}" required></div>
+                    <div class="field"><label for="time">Time</label><select id="time" name="time" required><option value="" disabled th:selected="${time == null}">Choose a time</option><option th:each="slot : ${slots}" th:value="${slot}" th:text="${slot}" th:selected="${time != null and time.toString() == slot}"></option></select></div>
+                    <div class="field"><label for="guests">Guests</label><input id="guests" type="number" name="guests" min="1" th:value="${guests != null ? guests : 2}" required></div>
+                </div>
+                <button class="button button-primary button-full" type="submit">Search availability <span aria-hidden="true">→</span></button>
+            </form>
+            <p class="form-footnote">Each reservation gives you two hours at the table.</p>
+        </section>
+        <section class="results-panel" aria-live="polite">
+            <div th:if="${results == null}" class="notice-card"><strong>A little planning goes a long way.</strong>Search a date and time to see what’s available. You can review your booking before you confirm it.</div>
+            <div th:if="${results != null}">
+                <h2 class="results-title">Available tables</h2>
+                <p class="form-intro" th:if="${date != null}" th:text="${date} + ' · ' + ${time} + ' · ' + ${guests} + ' guests'"></p>
+                <div class="empty-state" th:if="${results.isEmpty()}"><strong>No tables free at that time.</strong>Try another time or date and we’ll look again.</div>
+                <div class="results-list" th:unless="${results.isEmpty()}">
+                    <article class="result-row" th:each="table : ${results}">
+                        <div><h3 th:text="'Table ' + ${table.tableNumber}">Table 1</h3><p><span th:text="${table.seats}">2</span> seats · two-hour reservation</p></div>
+                        <form th:action="@{/book}" method="post">
+                            <input type="hidden" name="tableId" th:value="${table.id}"><input type="hidden" name="date" th:value="${date}"><input type="hidden" name="time" th:value="${time}"><input type="hidden" name="guests" th:value="${guests}">
+                            <button class="button button-primary" type="submit">Book table</button>
+                        </form>
+                    </article>
+                </div>
+            </div>
+        </section>
     </div>
-
-    <p><a href="/reservations">My reservations</a> | <a href="/tables">See all tables</a></p>
-
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Log out</button>
-    </form>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

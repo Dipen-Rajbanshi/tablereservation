@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Tables</title>
-</head>
+<head th:replace="~{fragments :: head('Our tables')}"></head>
 <body>
-    <h1>Our tables</h1>
-
-    <table border="1" cellpadding="6">
-        <tr>
-            <th>Table number</th>
-            <th>Seats</th>
-            <th>Active</th>
-        </tr>
-        <!-- Repeats this row once for every table sent by the controller -->
-        <tr th:each="table : ${tables}">
-            <td th:text="${table.tableNumber}"></td>
-            <td th:text="${table.seats}"></td>
-            <td th:text="${table.active}"></td>
-        </tr>
-    </table>
+<header th:replace="~{fragments :: navigation}"></header>
+<main class="page-shell">
+    <section class="hero-grid">
+        <div class="hero-copy">
+            <p class="eyebrow">A neighbourhood restaurant</p>
+            <h1>Make room for a <span class="accent">good meal.</span></h1>
+            <p class="lead">Gather around the table for seasonal plates, easy conversation, and the kind of evening that asks you to stay a little longer.</p>
+            <div class="page-actions"><a class="button button-primary" th:href="@{/login}">Find your table <span aria-hidden="true">→</span></a><a class="button button-secondary" th:href="@{/tables#table-list}">Explore the tables</a></div>
+        </div>
+        <div class="hero-art" role="img" aria-label="Illustration of a dinner plate on a warm table">
+            <span class="art-leaf" aria-hidden="true"></span><span class="art-leaf second" aria-hidden="true"></span>
+            <div class="art-table"><div class="art-plate">✳</div></div>
+            <div class="art-caption"><strong>Come as you are.</strong><span>We’ll save you a seat.</span></div>
+        </div>
+    </section>
+    <section id="table-list">
+        <div class="section-heading"><div><p class="eyebrow">Made for sharing</p><h2>Find your kind of table</h2></div><p>From a cosy dinner for two to a long catch-up with friends, choose a table that fits your plans.</p></div>
+        <div class="table-grid" th:if="${!tables.isEmpty()}">
+            <article class="table-card" th:each="table : ${tables}">
+                <div class="table-card-top"><span class="table-number" th:text="${table.tableNumber}">1</span><span class="tag" th:text="${table.active} ? 'Bookable' : 'Unavailable'">Bookable</span></div>
+                <h3 th:text="'Table ' + ${table.tableNumber}">Table 1</h3>
+                <p><span th:text="${table.seats}">2</span> seats · a place for good conversation</p>
+                <a class="button button-secondary" th:if="${table.active}" th:href="@{/login}">Find a time</a>
+                <span class="button button-secondary" th:unless="${table.active}" aria-disabled="true">Currently unavailable</span>
+            </article>
+        </div>
+        <div class="empty-state" th:if="${tables.isEmpty()}"><strong>We’re setting the tables.</strong>Check back soon, or sign in to see booking options.</div>
+    </section>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

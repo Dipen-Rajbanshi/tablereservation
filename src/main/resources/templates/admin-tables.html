@@ -1,44 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Manage tables</title>
-</head>
+<head th:replace="~{fragments :: head('Manage tables')}"></head>
 <body>
-    <h1>Manage tables</h1>
-
-    <p th:if="${error != null}" th:text="${error}" style="color: red;"></p>
-
-    <table border="1" cellpadding="6">
-        <tr>
-            <th>Table number</th>
-            <th>Seats</th>
-            <th>Active</th>
-            <th></th>
-        </tr>
-        <tr th:each="t : ${tables}">
-            <td th:text="${t.tableNumber}"></td>
-            <td th:text="${t.seats}"></td>
-            <td th:text="${t.active}"></td>
-            <td>
-                <form th:action="@{/admin/tables/{id}/toggle(id=${t.id})}" method="post">
-                    <button type="submit" th:text="${t.active} ? 'Disable' : 'Enable'"></button>
-                </form>
-            </td>
-        </tr>
-    </table>
-
-    <h2>Add a table</h2>
-    <form th:action="@{/admin/tables}" method="post">
-        <label>Table number: <input type="number" name="tableNumber" min="1" required></label>
-        <label>Seats: <input type="number" name="seats" min="1" required></label>
-        <button type="submit">Add</button>
-    </form>
-    <p><a href="/admin/reservations">View reservations</a></p>
-    <p><a href="/search">Back to search</a></p>
-
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Log out</button>
-    </form>
+<header th:replace="~{fragments :: navigation}"></header>
+<main class="page-shell">
+    <div class="page-heading"><p class="eyebrow">Staff workspace</p><h1>Manage tables</h1><p>Keep the floor plan up to date. Active tables are available to guests when they search.</p></div>
+    <p class="alert alert-error" th:if="${error != null}" th:text="${error}"></p>
+    <div class="admin-layout">
+        <section class="data-wrap">
+            <table class="data-table"><thead><tr><th>Table</th><th>Seats</th><th>Availability</th><th>Action</th></tr></thead>
+                <tbody><tr th:each="t : ${tables}"><td th:text="'Table ' + ${t.tableNumber}"></td><td th:text="${t.seats}"></td><td><span class="status-pill" th:classappend="${!t.active} ? ' status-inactive' : ''" th:text="${t.active} ? 'Active' : 'Paused'"></span></td><td><form th:action="@{/admin/tables/{id}/toggle(id=${t.id})}" method="post"><button class="button" th:classappend="${t.active} ? ' button-danger' : ' button-secondary'" type="submit" th:text="${t.active} ? 'Pause table' : 'Activate'"></button></form></td></tr></tbody>
+            </table>
+        </section>
+        <aside class="form-card admin-panel"><p class="eyebrow">Grow the floor</p><h2>Add a table</h2><p class="form-intro">Give your new table a number and set how many guests it can seat.</p>
+            <form th:action="@{/admin/tables}" method="post"><div class="form-grid">
+                <div class="field field-wide"><label for="tableNumber">Table number</label><input id="tableNumber" type="number" name="tableNumber" min="1" placeholder="e.g. 12" required></div>
+                <div class="field field-wide"><label for="seats">Number of seats</label><input id="seats" type="number" name="seats" min="1" placeholder="e.g. 4" required></div>
+            </div><button class="button button-primary button-full" type="submit">Add table</button></form>
+        </aside>
+    </div>
+    <div class="page-actions"><a class="button button-secondary" th:href="@{/admin/reservations}">View reservations</a><a class="button button-secondary" th:href="@{/tables}">Guest view</a></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

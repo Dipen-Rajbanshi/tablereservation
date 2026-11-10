@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="head(pageTitle)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f2e9">
+    <title th:text="${pageTitle} + ' | Olive &amp; Ember'">Olive &amp; Ember</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</th:block>
+<header class="site-header" th:fragment="navigation">
+    <div class="nav-shell">
+        <a class="brand" th:href="@{/tables}" aria-label="Olive and Ember home"><span class="brand-mark" aria-hidden="true">O</span><span>olive <i>&amp;</i> ember</span></a>
+        <nav class="main-nav" aria-label="Main navigation">
+            <a th:href="@{/tables}">Our tables</a><a th:href="@{/search}">Reserve</a>
+            <a th:if="${isLoggedIn}" th:href="@{/reservations}">My reservations</a>
+            <a th:if="${isAdmin}" th:href="@{/admin/reservations}">Staff</a>
+            <a class="nav-signin" th:unless="${isLoggedIn}" th:href="@{/login}">Sign in <span aria-hidden="true">↗</span></a>
+            <form class="nav-logout" th:if="${isLoggedIn}" th:action="@{/logout}" method="post"><button type="submit">Sign out</button></form>
+        </nav>
+    </div>
+</header>
+<footer class="site-footer" th:fragment="footer">
+    <div class="footer-shell">
+        <a class="brand footer-brand" th:href="@{/tables}"><span class="brand-mark" aria-hidden="true">O</span><span>olive <i>&amp;</i> ember</span></a>
+        <p>Good food, good company, room for everyone.</p><span class="footer-note">A neighbourhood table, saved for you.</span>
+    </div>
+</footer>
+</body>
+</html>

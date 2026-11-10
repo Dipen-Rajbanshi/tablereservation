@@ -1,56 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Reservations</title>
-</head>
+<head th:replace="~{fragments :: head('Staff reservations')}"></head>
 <body>
-    <h1>Reservations</h1>
-
-    <p th:if="${error != null}" th:text="${error}" style="color: red;"></p>
-
-    <!-- Pick the day to look at -->
-    <form action="/admin/reservations" method="get">
-        <label>Date: <input type="date" name="date" th:value="${date}" required></label>
-        <button type="submit">Show</button>
-    </form>
-
-    <h2 th:text="'Reservations on ' + ${date}"></h2>
-
-    <p th:if="${reservations.isEmpty()}">No reservations on this day.</p>
-
-    <table border="1" cellpadding="6" th:unless="${reservations.isEmpty()}">
-        <tr>
-            <th>Time</th>
-            <th>Table</th>
-            <th>Guest</th>
-            <th>Email</th>
-            <th>Guests</th>
-            <th>Status</th>
-            <th></th>
-        </tr>
-        <tr th:each="r : ${reservations}">
-            <td th:text="${r.startTime}"></td>
-            <td th:text="${r.table.tableNumber}"></td>
-            <td th:text="${r.user.name}"></td>
-            <td th:text="${r.user.email}"></td>
-            <td th:text="${r.guests}"></td>
-            <td th:text="${r.status}"></td>
-            <td>
-                <form th:if="${r.status.name() == 'CONFIRMED'}"
-                      th:action="@{/admin/reservations/{id}/cancel(id=${r.id})}" method="post">
-                    <!-- Remember which day we are looking at -->
-                    <input type="hidden" name="date" th:value="${date}">
-                    <button type="submit">Cancel</button>
-                </form>
-            </td>
-        </tr>
-    </table>
-
-    <p><a href="/admin/tables">Manage tables</a> | <a href="/search">Back to search</a></p>
-
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Log out</button>
-    </form>
+<header th:replace="~{fragments :: navigation}"></header>
+<main class="page-shell">
+    <div class="page-heading"><p class="eyebrow">Staff workspace</p><h1>Reservations</h1><p>See the day at a glance and help every guest feel expected.</p></div>
+    <p class="alert alert-error" th:if="${error != null}" th:text="${error}"></p>
+    <div class="toolbar">
+        <h2 style="font-size:28px;margin:0" th:text="'Bookings for ' + ${date}">Bookings</h2>
+        <form th:action="@{/admin/reservations}" method="get"><div class="field"><label for="date">Choose a date</label><input id="date" type="date" name="date" th:value="${date}" required></div><button class="button button-primary" type="submit">Show day</button></form>
+    </div>
+    <div class="empty-state" th:if="${reservations.isEmpty()}"><strong>A quiet day so far.</strong>There are no reservations on this date.</div>
+    <div class="data-wrap" th:unless="${reservations.isEmpty()}">
+        <table class="data-table"><thead><tr><th>Time</th><th>Table</th><th>Guest</th><th>Email</th><th>Party</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody><tr th:each="r : ${reservations}"><td th:text="${r.startTime}"></td><td th:text="'Table ' + ${r.table.tableNumber}"></td><td th:text="${r.user.name}"></td><td th:text="${r.user.email}"></td><td th:text="${r.guests}"></td><td><span class="status-pill" th:text="${r.status}"></span></td><td><form th:if="${r.status.name() == 'CONFIRMED'}" th:action="@{/admin/reservations/{id}/cancel(id=${r.id})}" method="post"><input type="hidden" name="date" th:value="${date}"><button class="button button-danger" type="submit">Cancel</button></form><span th:unless="${r.status.name() == 'CONFIRMED'}">—</span></td></tr></tbody>
+        </table>
+    </div>
+    <div class="page-actions"><a class="button button-secondary" th:href="@{/admin/tables}">Manage tables</a><a class="button button-secondary" th:href="@{/search}">Guest view</a></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

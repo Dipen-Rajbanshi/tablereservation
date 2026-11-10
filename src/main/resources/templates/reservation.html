@@ -1,33 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>My reservations</title>
-</head>
+<head th:replace="~{fragments :: head('My reservations')}"></head>
 <body>
-    <h1>My reservations</h1>
-
-    <p th:if="${param.booked != null}" style="color: green;">Your table is booked!</p>
-
-    <p th:if="${reservations.isEmpty()}">You have no reservations yet.</p>
-
-    <table border="1" cellpadding="6" th:unless="${reservations.isEmpty()}">
-        <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Table</th>
-            <th>Guests</th>
-            <th>Status</th>
-        </tr>
-        <tr th:each="r : ${reservations}">
-            <td th:text="${r.date}"></td>
-            <td th:text="${r.startTime}"></td>
-            <td th:text="${r.table.tableNumber}"></td>
-            <td th:text="${r.guests}"></td>
-            <td th:text="${r.status}"></td>
-        </tr>
-    </table>
-
-    <p><a href="/search">Find a table</a></p>
+<header th:replace="~{fragments :: navigation}"></header>
+<main class="page-shell">
+    <div class="page-heading"><p class="eyebrow">Your plans</p><h1>My reservations</h1><p>All the details for your next get-together, gathered in one place.</p></div>
+    <p class="alert" th:if="${param.booked != null}">Your table is booked. We look forward to seeing you!</p>
+    <div class="empty-state" th:if="${reservations.isEmpty()}"><strong>No plans on the calendar yet.</strong>Find a table and make your next evening one to look forward to.<div class="page-actions" style="justify-content:center"><a class="button button-primary" th:href="@{/search}">Find a table</a></div></div>
+    <div class="data-wrap" th:unless="${reservations.isEmpty()}">
+        <table class="data-table"><thead><tr><th>Date</th><th>Time</th><th>Table</th><th>Guests</th><th>Status</th></tr></thead>
+            <tbody><tr th:each="r : ${reservations}"><td th:text="${r.date}"></td><td th:text="${r.startTime}"></td><td th:text="'Table ' + ${r.table.tableNumber}"></td><td th:text="${r.guests}"></td><td><span class="status-pill" th:text="${r.status}"></span></td></tr></tbody>
+        </table>
+    </div>
+    <div class="page-actions"><a class="button button-secondary" th:href="@{/search}">Find a table</a></div>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>
